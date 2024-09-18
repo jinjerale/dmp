@@ -21,7 +21,10 @@ from data_server import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
-    path('clinics/', views.clinics),
-    path('doctors/', views.doctors),
-    path('patients/', views.patients),
+    path('clinics/', views.clinics, name='clinics'),
+    path('doctors/', views.doctors, name='doctors'),
+    path('patients/', views.patients, name='patients'),
+    path('clinics/<int:clinic_id>/', views.clinic, name='clinic'),
+    path('doctors/<int:doctor_id>/', views.doctor, name='doctor'),
+    path('patients/<int:patient_id>/', views.patient, name='patient'),
 ]

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Clinic: {{ clinic.name }}</h2>
+
+    <form method="PUT" action="{% url 'clinic' clinic.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Clinic Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ clinic.name }}">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address" name="address" value="{{ clinic.address }}">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{ clinic.phone }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ clinic.email }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Clinic</button>
+    </form>
+
+    <hr>
+
+    <h3>Doctors Affiliated with {{ clinic.name }}</h3>
+    <a href="#" class="btn btn-success mb-3">Add Doctor Affiliation</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Doctor Name</th>
+                <th>Office Address</th>
+                <th>Working Schedule</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in clinic.doctors %}
+            <tr>
+                <td>{{ doctor.name }}</td>
+                <td>{{ doctor.office_address }}</td>
+                <td>{{ doctor.working_schedule }}</td>
+                <td>
+                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

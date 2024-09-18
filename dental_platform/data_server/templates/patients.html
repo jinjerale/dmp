@@ -20,7 +20,7 @@
             {% for patient in patients %}
             <tr>
                 <td>{{ patient.name }}</td>
-                <td>{{ patient.dob }}</td>
+                <td>{{ patient.birth_date }}</td>
                 <td>{{ patient.last_visit_date }}</td>
                 <td>{{ patient.last_visit_doctor }}</td>
                 <td>{{ patient.last_visit_procedure }}</td>
@@ -28,7 +28,7 @@
                 <td>{{ patient.next_appointment_doctor }}</td>
                 <td>{{ patient.next_appointment_procedure }}</td>
                 <td>
-                    <a href="patients/{{  patient.id }}" class="btn btn-info btn-sm">View</a>
+                    <a href="{{ patient.id }}" class="btn btn-info btn-sm">View</a>
                 </td>
             </tr>
             {% endfor %}

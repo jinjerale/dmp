@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Patient: {{ patient.name }}</h2>
+
+    <form method="PUT" action="{% url 'patient' patient.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ patient.name }}">
+        </div>
+        <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" class="form-control" id="dob" name="dob" value="{{ patient.birth_date }}">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address" name="address" value="{{ patient.address }}">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{ patient.phone }}">
+        </div>
+        <div class="form-group">
+            <label for="ssn">Last 4 Digits of SSN</label>
+            <input type="text" class="form-control" id="ssn" name="ssn" value="{{ patient.ssn }}">
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <input type="text" class="form-control" id="gender" name="gender" value="{{ patient.gender }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Patient</button>
+    </form>
+
+    <hr>
+
+    <h3>Patient Visits</h3>
+    <!-- <a href="#" class="btn btn-success mb-3">Add New Visit</a> -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Visit Date</th>
+                <th>Doctor</th>
+                <th>Clinic</th>
+                <th>Procedures Done</th>
+                <th>Doctor's Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visit in patient.visits %}
+            <tr>
+                <td>{{ visit.date }}</td>
+                <td>{{ visit.doctor.name }}</td>
+                <td>{{ visit.clinic.name }}</td>
+                <td>{{ visit.procedures }}</td>
+                <td>{{ visit.doctor_notes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>Next Scheduled Appointment</h3>
+    {% if patient.next_appointment %}
+        <p>Appointment Date: {{ patient.next_appointment.date }}</p>
+        <p>Clinic: {{ patient.next_appointment.clinic.name }}</p>
+        <p>Doctor: {{ patient.next_appointment.doctor.name }}</p>
+        <p>Procedure: {{ patient.next_appointment.procedure }}</p>
+    {% else %}
+        <p>No upcoming appointments.</p>
+    {% endif %}
+
+    <!-- <a href="#" class="btn btn-info">Schedule Appointment</a> -->
+{% endblock %}
