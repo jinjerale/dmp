@@ -20,6 +20,7 @@ from data_server import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.index),
     path('clinics/', views.clinics),
     path('doctors/', views.doctors),
     path('patients/', views.patients),
