@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Doctors</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>NPI</th>
+                <th>Name</th>
+                <th>Specialties</th>
+                <th>Clinics</th>
+                <th>Patients</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in doctors %}
+            <tr>
+                <td>{{ doctor.npi }}</td>
+                <td>{{ doctor.name }}</td>
+                <td>{{ doctor.specialties }}</td>
+                <td>{{ doctor.clinic_count }}</td>
+                <td>{{ doctor.patient_count }}</td>
+                <td>
+                    <a href="/doctors/{{ doctor.id }}" class="btn btn-info btn-sm">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

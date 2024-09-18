@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Clinics</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Affliated Doctors</th>
+                <th>Affliated Patients</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clinic in clinics %}
+            <tr>
+                <td>{{ clinic.name }}</td>
+                <td>{{ clinic.phone }}</td>
+                <td>{{ clinic.city }}</td>
+                <td>{{ clinic.state }}</td>
+                <td>{{ clinic.doctor_count }}</td>
+                <td>{{ clinic.patient_count }}</td>
+                <td>
+                    <a href="clinics/{{ clinic.id }}" class="btn btn-info btn-sm">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
