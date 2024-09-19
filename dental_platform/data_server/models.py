@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 
 MAX_LENGTH = 100
 
@@ -29,9 +30,15 @@ class Doctor(models.Model):
 
     # schedule
 
+    def clean(self):
+        # each entry in specialties must be unique
+        if len(self.specialties) != len(set(self.specialties)):
+            raise ValidationError('Specialties must be unique')
+
 class Clinic(models.Model):
     name = models.CharField(max_length=MAX_LENGTH)
     phone = models.CharField(max_length=MAX_LENGTH)
+    email = models.EmailField()
     city = models.CharField(max_length=MAX_LENGTH)
     state = models.CharField(max_length=MAX_LENGTH)
     address = models.CharField(max_length=MAX_LENGTH)
@@ -41,7 +48,6 @@ class Clinic(models.Model):
 class Patient(models.Model):
     name = models.CharField(max_length=MAX_LENGTH)
     phone = models.CharField(max_length=MAX_LENGTH)
-    email = models.EmailField()
     address = models.CharField(max_length=MAX_LENGTH)
     birth_date = models.DateField()
     ssn = models.CharField(max_length=9)
@@ -79,21 +85,22 @@ class Appointment(models.Model):
     procedure = models.CharField(max_length=2, choices=ProcedureType.choices)
     # status
 
-## Frontend Object
+## Form object
+
+class ClinicForm(forms.ModelForm):
+    class Meta:
+        model = Clinic
+        fields = ['id', 'name', 'phone', 'address', 'email']
+
 class DoctorDetail(forms.ModelForm):
     class Meta:
         model = Doctor
         fields = ['id', 'npi', 'name', 'email', 'phone', 'specialties']
-        # widgets = {
-        #     'specialties': forms.CheckboxSelectMultiple(
-        #         choices=ProcedureType.choices,
-        #     )
-        # }
 
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
-        fields = ['id', 'name', 'phone', 'email', 'address', 'birth_date', 'ssn', 'gender']
+        fields = ['id', 'name', 'phone', 'address', 'birth_date', 'ssn', 'gender']
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
         }

@@ -2,9 +2,9 @@
 
 {% block content %}
 {% load form_filters %}
-    <h2>Doctor: {{ doctor.name }}</h2>
+    <h2>Doctor: {{ doctor.name.value }}</h2>
 
-    <form method="PUT" action="{{ doctor.id }}">
+    <form method="POST" action="edit/">
         {% csrf_token %}
         <div class="form-group">
             <label for="npi">NPI</label>

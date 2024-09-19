@@ -20,3 +20,15 @@ def getPatientDetail(patient_id):
     appointments = Appointment.objects.filter(patient=obj)
 
     return form, visits, appointments
+
+def updatePatientDetail(patient_id, data):
+    obj = Patient.objects.get(id=patient_id)
+    if obj is None:
+        return False
+
+    form = PatientForm(data, instance=obj)
+    if form.is_valid():
+        form.save()
+        return True
+    print(form.errors)
+    return False

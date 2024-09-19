@@ -23,3 +23,14 @@ def getDoctorDetail(doctor_id):
     patients = obj.patient_set.all()
 
     return formobj, clinics, patients
+
+def updateDotorDetail(doctor_id, data):
+    obj = Doctor.objects.get(id=doctor_id)
+    if obj is None:
+        return False
+
+    formobj = DoctorDetail(data, instance=obj)
+    if formobj.is_valid():
+        formobj.save()
+        return True
+    return False

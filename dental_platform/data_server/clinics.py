@@ -1,4 +1,4 @@
-from data_server.models import Clinic
+from data_server.models import Clinic, ClinicForm
 
 def getClinics():
     objs = Clinic.objects.all()
@@ -12,7 +12,23 @@ def getClinicDetail(clinic_id):
     if obj is None:
         return None, None, None
 
+    formobj = ClinicForm(instance=obj)
+
     # get affliated doctors
     doctors = obj.affliated_doctors.all()
 
-    return obj, doctors
+    return formobj, doctors
+
+def updateClinicDetail(clinic_id, data):
+    obj = Clinic.objects.get(id=clinic_id)
+    if obj is None:
+        return False
+
+    formobj = ClinicForm(data, instance=obj)
+    if formobj.is_valid():
+        print('valid')
+        formobj.save()
+        return True
+    print('invalid')
+    print(formobj.errors)
+    return False

@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from data_server.clinics import *
 from data_server.doctors import *
 from data_server.patients import *
+from django.shortcuts import redirect
 
 @api_view(['GET'])
 def index(request):
@@ -38,13 +39,10 @@ def patients(request):
     return HttpResponse(template.render(context, request))
 
 # get clinic details
-@api_view(['GET', 'POST', 'PUT'])
+@api_view(['GET', 'POST'])
 def clinic(request, clinic_id):
     if request.method == 'POST':
         # create new clinic
-        pass
-    elif request.method == 'PUT':
-        # update clinic
         pass
     # get
     template = loader.get_template('clinic_detail.html')
@@ -59,13 +57,10 @@ def clinic(request, clinic_id):
     }
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET', 'POST', 'PUT'])
+@api_view(['GET', 'POST'])
 def doctor(request, doctor_id):
     if request.method == 'POST':
         # create new doctor
-        pass
-    elif request.method == 'PUT':
-        # update doctor
         pass
     # get
     template = loader.get_template('doctor_detail.html')
@@ -82,13 +77,10 @@ def doctor(request, doctor_id):
     }
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET', 'POST', 'PUT'])
+@api_view(['GET', 'POST'])
 def patient(request, patient_id):
     if request.method == 'POST':
         # create new patient
-        pass
-    elif request.method == 'PUT':
-        # update patient
         pass
     # get
     template = loader.get_template('patient_detail.html')
@@ -103,3 +95,21 @@ def patient(request, patient_id):
         'next_appointment': appointment
     }
     return HttpResponse(template.render(context, request))
+
+@api_view(['POST'])
+def edit_doctor(request, doctor_id):
+    if request.method == 'POST':
+        updateDotorDetail(doctor_id, request.POST)
+    return redirect('doctor', doctor_id=doctor_id)
+
+@api_view(['POST'])
+def edit_clinic(request, clinic_id):
+    if request.method == 'POST':
+        updateClinicDetail(clinic_id, request.POST)
+    return redirect('clinic', clinic_id=clinic_id)
+
+@api_view(['POST'])
+def edit_patient(request, patient_id):
+    if request.method == 'POST':
+        updatePatientDetail(patient_id, request.POST)
+    return redirect('patient', patient_id=patient_id)

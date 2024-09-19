@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Clinic: {{ clinic.name }}</h2>
+{% load form_filters %}
+    <h2>Clinic: {{ clinic.name.value }}</h2>
 
-    <form method="PUT" action="{{ patient.id }}">
+    <form method="POST" action="edit/">
         {% csrf_token %}
         <div class="form-group">
             <label for="name">Clinic Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ clinic.name }}">
+            {{ clinic.name|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="address">Address</label>
-            <input type="text" class="form-control" id="address" name="address" value="{{ clinic.address }}">
+            {{ clinic.address|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="text" class="form-control" id="phone" name="phone" value="{{ clinic.phone }}">
+            {{ clinic.phone|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ clinic.email }}">
+            {{ clinic.email|add_class:"form-control" }}
         </div>
         <button type="submit" class="btn btn-primary">Update Clinic</button>
     </form>
