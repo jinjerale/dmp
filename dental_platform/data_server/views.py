@@ -65,10 +65,16 @@ def doctor(request, doctor_id):
         pass
     # get
     template = loader.get_template('doctor_detail.html')
+    doctor, affliated_clinics, affliated_patients = getDoctorDetail(doctor_id)
+    # show not found page if doctor is not found
+    if doctor is None:
+        template = loader.get_template('not_found.html')
+        context = {}
+
     context = {
-        'doctor': {
-            'id' : doctor_id,
-        } #TODO
+        'doctor': doctor,
+        'clinics': affliated_clinics,
+        'patients': affliated_patients,
     }
     return HttpResponse(template.render(context, request))
 

@@ -18,7 +18,7 @@
             <tr>
                 <td>{{ doctor.npi }}</td>
                 <td>{{ doctor.name }}</td>
-                <td>{% for procedure in doctor.specialities %}
+                <td>{% for procedure in doctor.specialties %}
                     {{ procedure }}<br>
                     {% endfor %}
                 </td>

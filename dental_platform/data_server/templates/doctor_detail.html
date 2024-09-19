@@ -1,29 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load form_filters %}
     <h2>Doctor: {{ doctor.name }}</h2>
 
-    <form method="PUT" action="{% url 'doctor' doctor.id %}">
+    <form method="PUT" action="{{ doctor.id }}">
         {% csrf_token %}
         <div class="form-group">
             <label for="npi">NPI</label>
-            <input type="text" class="form-control" id="npi" name="npi" value="{{ doctor.npi }}">
+            {{ doctor.npi|add_class:'form-control' }}
         </div>
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ doctor.name }}">
+            {{ doctor.name|add_class:'form-control' }}
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ doctor.email }}">
+            {{ doctor.email|add_class:'form-control' }}
         </div>
         <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="text" class="form-control" id="phone" name="phone" value="{{ doctor.phone }}">
+            {{ doctor.phone|add_class:'form-control' }}
         </div>
         <div class="form-group">
             <label for="specialties">Specialties</label>
-            <input type="text" class="form-control" id="specialties" name="specialties" value="{{ doctor.specialties }}">
+            {{ doctor.specialities|add_class:'form-control' }}
         </div>
         <button type="submit" class="btn btn-primary">Update Doctor</button>
     </form>
@@ -32,16 +33,16 @@
 
     <h3>Affiliated Clinics</h3>
     <ul class="list-group mb-4">
-        {% for clinic in doctor.clinics %}
+        {% for clinic in clinics %}
         <li class="list-group-item">{{ clinic.name }} ({{ clinic.city }}, {{ clinic.state }})</li>
         {% endfor %}
     </ul>
 
-    <h3>Patients of {{ doctor.name }}</h3>
+    <h3>Affiliated Patients</h3>
     <ul class="list-group">
-        {% for patient in doctor.patients %}
+        {% for patient in patients %}
         <li class="list-group-item">
-            <strong>{{ patient.name }}</strong> ({{ patient.dob }})
+            <strong>{{ patient.name }}</strong>
         </li>
         {% endfor %}
     </ul>

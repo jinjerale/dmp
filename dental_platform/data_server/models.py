@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.contrib.postgres.fields import ArrayField
 
 MAX_LENGTH = 100
@@ -17,7 +18,9 @@ class ProcedureType(models.TextChoices):
 class Doctor(models.Model):
     npi = models.CharField(max_length=10) # National Provider Identifier
     name = models.CharField(max_length=MAX_LENGTH)
-    # specialities is a list of enums
+    email = models.EmailField()
+    phone = models.CharField(max_length=MAX_LENGTH)
+    # specialties is a list of enums
     specialities = ArrayField(models.CharField(max_length=2, choices=ProcedureType.choices))
 
     # schedule
@@ -69,3 +72,14 @@ class Appointment(models.Model):
     time = models.TimeField()
     procedure = models.CharField(max_length=2, choices=ProcedureType.choices)
     # status
+
+## Frontend Object
+class DoctorDetail(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ['id', 'npi', 'name', 'email', 'phone', 'specialities']
+        # widgets = {
+        #     'specialities': forms.CheckboxSelectMultiple(
+        #         choices=ProcedureType.choices,
+        #     )
+        # }
