@@ -34,3 +34,10 @@ def updateDotorDetail(doctor_id, data):
         formobj.save()
         return True
     return False
+
+def addDoctor(data):
+    formobj = DoctorDetail(data)
+    if formobj.is_valid():
+        formobj.save()
+        return True
+    return False

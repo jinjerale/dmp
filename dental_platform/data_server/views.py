@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from rest_framework.decorators import api_view
 from data_server.clinics import *
 from data_server.doctors import *
 from data_server.patients import *
 from django.shortcuts import redirect
+import json
 
 @api_view(['GET'])
 def index(request):
@@ -13,8 +14,15 @@ def index(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def clinics(request):
+    if request.method == 'POST':
+        # create new clinic
+        data = json.loads(request.body)
+        success = addClinic(data)
+        return JsonResponse({'success': success})
+
+    # get
     template = loader.get_template('clinics.html')
     clinics = getClinics()
     context = {
@@ -22,16 +30,28 @@ def clinics(request):
     }
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def doctors(request):
+    if request.method == 'POST':
+        # create new doctor
+        data = json.loads(request.body)
+        success = addDoctor(data)
+        return JsonResponse({'success': success})
+    # get
     template = loader.get_template('doctors.html')
     context = {
         'doctors': getDoctors()
     }
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def patients(request):
+    if request.method == 'POST':
+        # create new patient
+        data = json.loads(request.body)
+        success = addPatient(data)
+        return JsonResponse({'success': success})
+    # get
     template = loader.get_template('patients.html')
     context = {
         'patients': getPatients()
@@ -39,12 +59,8 @@ def patients(request):
     return HttpResponse(template.render(context, request))
 
 # get clinic details
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def clinic(request, clinic_id):
-    if request.method == 'POST':
-        # create new clinic
-        pass
-    # get
     template = loader.get_template('clinic_detail.html')
     clinic, affliated_doctors = getClinicDetail(clinic_id)
     # show not found page if clinic is not found
@@ -57,12 +73,8 @@ def clinic(request, clinic_id):
     }
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def doctor(request, doctor_id):
-    if request.method == 'POST':
-        # create new doctor
-        pass
-    # get
     template = loader.get_template('doctor_detail.html')
     doctor, affliated_clinics, affliated_patients = getDoctorDetail(doctor_id)
     # show not found page if doctor is not found
@@ -77,12 +89,8 @@ def doctor(request, doctor_id):
     }
     return HttpResponse(template.render(context, request))
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def patient(request, patient_id):
-    if request.method == 'POST':
-        # create new patient
-        pass
-    # get
     template = loader.get_template('patient_detail.html')
     patient, visits, appointment = getPatientDetail(patient_id)
     # show not found page if patient is not found

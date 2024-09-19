@@ -32,3 +32,11 @@ def updatePatientDetail(patient_id, data):
         return True
     print(form.errors)
     return False
+
+def addPatient(data):
+    form = PatientForm(data)
+    if form.is_valid():
+        form.save()
+        return True
+    print(form.errors)
+    return False

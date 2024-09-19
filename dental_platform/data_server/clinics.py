@@ -32,3 +32,11 @@ def updateClinicDetail(clinic_id, data):
     print('invalid')
     print(formobj.errors)
     return False
+
+def addClinic(data):
+    formobj = ClinicForm(data)
+    if formobj.is_valid():
+        formobj.save()
+        return True
+    print(formobj.errors)
+    return False

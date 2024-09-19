@@ -90,7 +90,7 @@ class Appointment(models.Model):
 class ClinicForm(forms.ModelForm):
     class Meta:
         model = Clinic
-        fields = ['id', 'name', 'phone', 'address', 'email']
+        fields = ['id', 'name', 'phone', 'address', 'email', 'city', 'state']
 
 class DoctorDetail(forms.ModelForm):
     class Meta:
