@@ -13,6 +13,10 @@ class ProcedureType(models.TextChoices):
     ROOT_CANAL = 'RC', 'Root Canal'
     WHITENING = 'WH', 'Whitening'
 
+class Gender(models.TextChoices):
+    MALE = 'M', 'Male'
+    FEMAILE = 'F', 'Female'
+
 ### Entities ##
 
 class Doctor(models.Model):
@@ -30,6 +34,7 @@ class Clinic(models.Model):
     phone = models.CharField(max_length=MAX_LENGTH)
     city = models.CharField(max_length=MAX_LENGTH)
     state = models.CharField(max_length=MAX_LENGTH)
+    address = models.CharField(max_length=MAX_LENGTH)
     affliated_doctors = models.ManyToManyField(Doctor, through='ClinicDoctor', blank=True)
 
 
@@ -40,6 +45,7 @@ class Patient(models.Model):
     address = models.CharField(max_length=MAX_LENGTH)
     birth_date = models.DateField()
     ssn = models.CharField(max_length=9)
+    gender = models.CharField(max_length=1, choices=Gender.choices)
 
     affliated_clinics = models.ManyToManyField(Clinic, blank=True)
     afflicated_doctors = models.ManyToManyField(Doctor, blank=True)
@@ -83,3 +89,11 @@ class DoctorDetail(forms.ModelForm):
         #         choices=ProcedureType.choices,
         #     )
         # }
+
+class PatientForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = ['id', 'name', 'phone', 'email', 'address', 'birth_date', 'ssn', 'gender']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        }

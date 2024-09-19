@@ -48,10 +48,14 @@ def clinic(request, clinic_id):
         pass
     # get
     template = loader.get_template('clinic_detail.html')
+    clinic, affliated_doctors = getClinicDetail(clinic_id)
+    # show not found page if clinic is not found
+    if clinic is None:
+        template = loader.get_template('not_found.html')
+        context = {}
     context = {
-        'clinic': {
-            'id' : clinic_id,
-        } #TODO
+        'clinic': clinic,
+        'doctors': affliated_doctors
     }
     return HttpResponse(template.render(context, request))
 
@@ -88,9 +92,14 @@ def patient(request, patient_id):
         pass
     # get
     template = loader.get_template('patient_detail.html')
+    patient, visits, appointment = getPatientDetail(patient_id)
+    # show not found page if patient is not found
+    if patient is None:
+        template = loader.get_template('not_found.html')
+        context = {}
     context = {
-        'patient': {
-            'id' : patient_id,
-        } #TODO
+        'patient': patient,
+        'visits': visits,
+        'next_appointment': appointment
     }
     return HttpResponse(template.render(context, request))

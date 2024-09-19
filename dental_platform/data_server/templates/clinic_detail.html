@@ -3,7 +3,7 @@
 {% block content %}
     <h2>Clinic: {{ clinic.name }}</h2>
 
-    <form method="PUT" action="{% url 'clinic' clinic.id %}">
+    <form method="PUT" action="{{ patient.id }}">
         {% csrf_token %}
         <div class="form-group">
             <label for="name">Clinic Name</label>
@@ -26,8 +26,7 @@
 
     <hr>
 
-    <h3>Doctors Affiliated with {{ clinic.name }}</h3>
-    <a href="#" class="btn btn-success mb-3">Add Doctor Affiliation</a>
+    <h3>Doctors Affiliated</h3>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -38,13 +37,28 @@
             </tr>
         </thead>
         <tbody>
-            {% for doctor in clinic.doctors %}
+            <!-- TODO: Add doctors here -->
+            <tr>
+                <td>
+                    <input type="text" class="form-control" id="doctor_name">
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="office_address">
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="working_schedule">
+                </td>
+                <td>
+                    <a href="#" class="btn btn-success mb-3">Add Doctor Affiliation</a>
+                </td>
+            </tr>
+            {% for doctor in doctors %}
             <tr>
                 <td>{{ doctor.name }}</td>
                 <td>{{ doctor.office_address }}</td>
                 <td>{{ doctor.working_schedule }}</td>
                 <td>
-                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ clinic.id }}/doctors" class="btn btn-warning btn-sm">Edit</a>
                 </td>
             </tr>
             {% endfor %}
