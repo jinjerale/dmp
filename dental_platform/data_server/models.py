@@ -25,7 +25,7 @@ class Doctor(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=MAX_LENGTH)
     # specialties is a list of enums
-    specialities = ArrayField(models.CharField(max_length=2, choices=ProcedureType.choices))
+    specialties = ArrayField(models.CharField(max_length=2, choices=ProcedureType.choices))
 
     # schedule
 
@@ -83,9 +83,9 @@ class Appointment(models.Model):
 class DoctorDetail(forms.ModelForm):
     class Meta:
         model = Doctor
-        fields = ['id', 'npi', 'name', 'email', 'phone', 'specialities']
+        fields = ['id', 'npi', 'name', 'email', 'phone', 'specialties']
         # widgets = {
-        #     'specialities': forms.CheckboxSelectMultiple(
+        #     'specialties': forms.CheckboxSelectMultiple(
         #         choices=ProcedureType.choices,
         #     )
         # }

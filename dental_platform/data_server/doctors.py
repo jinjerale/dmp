@@ -4,7 +4,7 @@ def getDoctors():
     objs = Doctor.objects.all()
 
     for doctor in objs:
-        doctor.specialties = [ProcedureType(s).label for s in doctor.specialities]
+        doctor.specialties = [ProcedureType(s).label for s in doctor.specialties]
         doctor.clinic_count = doctor.clinic_set.count()
         doctor.patient_count = doctor.patient_set.count()
     return objs
