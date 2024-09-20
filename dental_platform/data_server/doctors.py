@@ -36,8 +36,9 @@ def updateDotorDetail(doctor_id, data):
     return False
 
 def addDoctor(data):
+    print(data)
     formobj = DoctorDetail(data)
     if formobj.is_valid():
         formobj.save()
-        return True
-    return False
+        return True, "Doctor added successfully"
+    return False, formobj.errors.as_text()
