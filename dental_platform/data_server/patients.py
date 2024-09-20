@@ -1,4 +1,5 @@
-from data_server.models import Patient, Visit, Appointment, PatientForm, ProcedureType, Doctor
+from data_server.models import Patient, Visit, Appointment, PatientForm, ProcedureType, VisitForm
+from django.shortcuts import get_object_or_404
 
 def getPatients():
     objs = Patient.objects.all()
@@ -48,6 +49,17 @@ def addPatient(data):
     form = PatientForm(data)
     if form.is_valid():
         form.save()
+        return True
+    print(form.errors)
+    return False
+
+def addVisit(patient_id, data):
+    patient = get_object_or_404(Patient, id=patient_id)
+    form = VisitForm(data)
+    if form.is_valid():
+        visit = form.save(commit=False)
+        visit.patient = patient
+        visit.save()
         return True
     print(form.errors)
     return False

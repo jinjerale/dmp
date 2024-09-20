@@ -48,14 +48,6 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
             {% for visit in visits %}
             <tr>
                 <td>{{ visit.date }}</td>
@@ -71,6 +63,42 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- session for add new visit, make it smaller-->
+
+    <div class="alert alert-info">
+        <h4>Add New Visit</h4>
+        <form method="POST" action="visits/">
+            {% csrf_token %}
+            <!-- fields: 'patient', 'clinic', 'doctor', 'date', 'time', 'procedures', 'note' -->
+            <div class="form-group">
+                <label for="clinic">Clinic</label>
+                {{ visit.clinic|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="doctor">Doctor</label>
+                {{ visit.doctor|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="date">Visit Date</label>
+                {{ visit.date|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="time">Visit Time</label>
+                {{ visit.time|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="procedures">Procedures Done (options: CL,CR,FI,RC,WH. Each procedure separated by comma)</label>
+                {{ visit.procedures|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="note">Doctor's Notes</label>
+                {{ visit.note|add_class:"form-control" }}
+            </div>
+            {{ error }}
+            <button type="submit" class="btn btn-primary">Add Visit</button>
+        </form>
+    </div>
 
     <hr>
 

@@ -102,6 +102,7 @@ def patient(request, patient_id):
     context = {
         'patient': patient,
         'visits': visits,
+        'visit': VisitForm(),
         'next_appointment': appointment
     }
     return HttpResponse(template.render(context, request))
@@ -131,3 +132,11 @@ def get_clinic_info(request, clinic_id):
         return JsonResponse({'error': 'clinic not found'}, content_type='application/json', status=404)
     data = ClinicSerializer(clinic).data
     return JsonResponse(data, content_type='application/json', status=200)
+
+@api_view(['POST'])
+def patient_visit(request, patient_id):
+    if request.method == 'POST':
+        success = addVisit(patient_id, request.POST)
+        if success:
+            return redirect('patient', patient_id=patient_id)
+    return redirect('patient', patient_id=patient_id)

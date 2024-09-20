@@ -35,6 +35,9 @@ class Doctor(models.Model):
         if len(self.specialties) != len(set(self.specialties)):
             raise ValidationError('Specialties must be unique')
 
+    def __str__(self) -> str:
+        return self.name
+
 class Clinic(models.Model):
     name = models.CharField(max_length=MAX_LENGTH)
     phone = models.CharField(max_length=MAX_LENGTH)
@@ -43,6 +46,9 @@ class Clinic(models.Model):
     state = models.CharField(max_length=MAX_LENGTH)
     address = models.CharField(max_length=MAX_LENGTH)
     affliated_doctors = models.ManyToManyField(Doctor, through='ClinicDoctor', blank=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Patient(models.Model):
@@ -55,7 +61,10 @@ class Patient(models.Model):
 
     affliated_clinics = models.ManyToManyField(Clinic, blank=True)
     afflicated_doctors = models.ManyToManyField(Doctor, blank=True)
-    # address
+
+    def __str__(self) -> str:
+        return self.name
+
 
 ### Relationships ###
 
@@ -104,4 +113,17 @@ class PatientForm(forms.ModelForm):
         fields = ['id', 'name', 'phone', 'address', 'birth_date', 'ssn', 'gender']
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        }
+
+class VisitForm(forms.ModelForm):
+    class Meta:
+        model = Visit
+        fields = ['clinic', 'doctor', 'date', 'time', 'procedures', 'note']
+        # display doctor name and clinic name instead of object id
+        widgets = {
+            'clinic': forms.Select(attrs={'class': 'form-control'}),
+            'doctor': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
