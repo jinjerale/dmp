@@ -61,8 +61,12 @@
                 <td>{{ visit.date }}</td>
                 <td>{{ visit.doctor.name }}</td>
                 <td>{{ visit.clinic.name }}</td>
-                <td>{{ visit.procedures }}</td>
-                <td>{{ visit.doctor_notes }}</td>
+                <td>
+                    {% for procedure in visit.procedures %}
+                    {{ procedure }}<br>
+                    {% endfor %}
+                </td>
+                <td>{{ visit.note }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -71,11 +75,12 @@
     <hr>
 
     <h3>Next Scheduled Appointment</h3>
-    {% if patient.next_appointment %}
-        <p>Appointment Date: {{ patient.next_appointment.date }}</p>
-        <p>Clinic: {{ patient.next_appointment.clinic.name }}</p>
-        <p>Doctor: {{ patient.next_appointment.doctor.name }}</p>
-        <p>Procedure: {{ patient.next_appointment.procedure }}</p>
+    {% if next_appointment %}
+        <p>Appointment Date: {{ next_appointment.date }}</p>
+        <p>Appointment Time: {{ next_appointment.time }}</p>
+        <p>Clinic: {{ next_appointment.clinic.name }}</p>
+        <p>Doctor: {{ next_appointment.doctor.name }}</p>
+        <p>Procedure: {{ next_appointment.procedure }}</p>
     {% else %}
         <p>No upcoming appointments.</p>
     {% endif %}

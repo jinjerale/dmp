@@ -72,7 +72,7 @@ class Visit(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
-    procedures = models.CharField(max_length=2, choices=ProcedureType.choices)
+    procedures = ArrayField(models.CharField(max_length=2, choices=ProcedureType.choices))
     note = models.TextField()
     # status
 
@@ -82,6 +82,7 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
+    date_booked = models.DateField(auto_now_add=True)
     procedure = models.CharField(max_length=2, choices=ProcedureType.choices)
     # status
 

@@ -9,7 +9,7 @@
                 <th>Date of Birth</th>
                 <th>Last Visit Date</th>
                 <th>Last Visit Doctor</th>
-                <th>Last Visit Procedure</th>
+                <th>Last Visit Procedures</th>
                 <th>Next Appointment Date</th>
                 <th>Next Appointment Doctor</th>
                 <th>Next Appointment Procedure</th>
@@ -23,7 +23,11 @@
                 <td>{{ patient.birth_date }}</td>
                 <td>{{ patient.last_visit_date }}</td>
                 <td>{{ patient.last_visit_doctor }}</td>
-                <td>{{ patient.last_visit_procedure }}</td>
+                <td>
+                    {% for procedure in patient.last_visit_procedures %}
+                    {{ procedure }}<br>
+                    {% endfor %}
+                </td>
                 <td>{{ patient.next_appointment_date }}</td>
                 <td>{{ patient.next_appointment_doctor }}</td>
                 <td>{{ patient.next_appointment_procedure }}</td>
