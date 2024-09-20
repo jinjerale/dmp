@@ -30,4 +30,5 @@ urlpatterns = [
     path('clinics/<int:clinic_id>/edit/', views.edit_clinic, name='edit_clinic'),
     path('doctors/<int:doctor_id>/edit/', views.edit_doctor, name='edit_doctor'),
     path('patients/<int:patient_id>/edit/', views.edit_patient, name='edit_patient'),
+    path('clinics/<int:clinic_id>/info/', views.get_clinic_info, name='get_clinic_info'),
 ]

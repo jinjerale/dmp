@@ -40,3 +40,10 @@ def addClinic(data):
         return True
     print(formobj.errors)
     return False
+
+def getClinicInfo(clinic_id):
+    try:
+        obj = Clinic.objects.get(id=clinic_id)
+    except Clinic.DoesNotExist:
+        return None
+    return obj

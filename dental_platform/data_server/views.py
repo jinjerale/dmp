@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from rest_framework.decorators import api_view
+from django.shortcuts import redirect
+import json
+
 from data_server.clinics import *
 from data_server.doctors import *
 from data_server.patients import *
-from django.shortcuts import redirect
-import json
+from data_server.serializers import *
 
 @api_view(['GET'])
 def index(request):
@@ -121,3 +123,11 @@ def edit_patient(request, patient_id):
     if request.method == 'POST':
         updatePatientDetail(patient_id, request.POST)
     return redirect('patient', patient_id=patient_id)
+
+@api_view(['GET'])
+def get_clinic_info(request, clinic_id):
+    clinic = getClinicInfo(clinic_id)
+    if clinic is None:
+        return JsonResponse({'error': 'clinic not found'}, content_type='application/json', status=404)
+    data = ClinicSerializer(clinic).data
+    return JsonResponse(data, content_type='application/json', status=200)

@@ -35,3 +35,11 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "ssn": "123456789",
     "gender": "M"
 }' $ENDPOINT/patients/
+
+# Get Clinic info
+# parameters: 'id': clinic id
+# exmple response 1:
+#    {"id": 3, "name": "Clinic 1", "phone": "1234567890", "email": "a@gamil.com", "city": "San Francisco", "state": "CA", "address": "1234 Main St"}
+# example response 2:
+#    {"error": "clinic not found"}
+curl -X GET $ENDPOINT/clinics/1/info/
