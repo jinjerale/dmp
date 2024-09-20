@@ -1,19 +1,32 @@
 # Dental Management Platform
 
 ## Setup
+
+### Create virtual environment
 ```
 python -m venv env
 ```
+### Set up virtual environment
+- **For MAC/Linux**
 ```
 source env/bin/activate
 ```
+- **For Windows**
 ```
 .\env\Scripts\activate
 ```
+### Install dependencies
+**Note**: You may need to install postgresql on your local machine to install certain modules.
 ```
 pip install -r requirements.txt
 ```
-Fill up `dental_platform/dental_platform/.env`
+### PostgreSQL Configuation
+Fill up `dental_platform/dental_platform/.env` to allow your server connect to the database. You can check out `dental_platform/dental_platform/.env.template` to see which field you have to fill.
+
+This step requires you to prepare a PostreSQL. An easy way to create a databse is to use docker.
+Here is the [guidance](./postgres.md)
+
+### Setup Django Project
 ```
 cd dental_platform
 ```
@@ -23,8 +36,31 @@ python manage.py makemigrations
 ```
 python manage.py migrate
 ```
-## Explain
+### Run Server
+```
+python manage.py runserver
+```
+## How to use
+- The home page is in `localhost:8000/`
+- The public API calls are in the `API-example.sh`. You can check the input parameters
 
-## Rest API
+## Rest APIs
+| API path | Method | Introduction | payload | output |
+| -------- | ------ | ------------ | ----- | ------ |
+| / | GET | homepage | | html page |
+| /clinics | GET | clinic page  | | html page |
+| /doctors | GET | doctor page  | | html page |
+| /patients | GET | patient page  | | html page |
+| /clinics/:clinic_id | GET | clinic detail page  | | html page |
+| /doctors/:doctors_id | GET | doctor detail page  | | html page |
+| /patients/:patient_id | GET | patient detail page  | | html page |
+| /clinics/:clinic_id/edit/ | POST | update clinic command  | ['id', 'name', 'phone', 'address', 'email', 'city', 'state'] | redirect |
+| /doctors/:doctors_id/edit/ | POST | update doctor command  | ['id', 'npi', 'name', 'email', 'phone', 'specialties'] | redirect |
+| /patients/:patient_id/edit/ | POST | update patient command  | ['id', 'name', 'phone', 'address', 'birth_date', 'ssn', 'gender'] | redirect |
+| /clinics/ | POST | add new clinic, public API interface  | see `API-example.sh` | { sucess: true/false} |
+| /doctors/ | POST | add new doctor, public API interface  | see `API-example.sh` | { sucess: true/false} |
+| /patients/ | POST | add new patient, public API interface  | see `API-example.sh` | { sucess: true/false} |
+| /clinics/:clinic_id/info/ | GET | get clinic information without affiliated patients and doctors | see `API-example.sh` | see `API-example.sh` |
+
 
 ## Assumptions
