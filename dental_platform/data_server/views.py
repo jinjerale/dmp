@@ -57,13 +57,16 @@ def doctors(request):
 def patients(request):
     if request.method == 'POST':
         # create new patient
-        data = json.loads(request.body)
-        success = addPatient(data)
-        return JsonResponse({'success': success})
+        try:
+            success, message = addPatient(request.data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+        return JsonResponse({'success': success, 'message': message})
     # get
     template = loader.get_template('patients.html')
     context = {
-        'patients': getPatients()
+        'patients': getPatients(),
+        'new_patient': PatientForm(),
     }
     return HttpResponse(template.render(context, request))
 

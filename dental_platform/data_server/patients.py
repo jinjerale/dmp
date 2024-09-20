@@ -49,9 +49,9 @@ def addPatient(data):
     form = PatientForm(data)
     if form.is_valid():
         form.save()
-        return True
+        return True, "Patient added successfully"
     print(form.errors)
-    return False
+    return False, form.errors.as_text()
 
 def addVisit(patient_id, data):
     patient = get_object_or_404(Patient, id=patient_id)

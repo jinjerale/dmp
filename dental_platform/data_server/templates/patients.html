@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load form_filters %}
+{% load crispy_forms_tags %}
     <h2>Patients</h2>
     <table class="table table-striped">
         <thead>
@@ -38,4 +40,47 @@
             {% endfor %}
         </tbody>
     </table>
-{% endblock %}
+    <div class="alert alert-info">
+    <!-- add new patient, with ajax post request -->
+    <form id="add-patient" method="POST" action="">
+        {% csrf_token %}
+        {{ new_patient|crispy }}
+        <button type="submit" class="btn btn-primary">Add Clinic</button>
+    </form>
+    </div>
+
+    <div id="responseMessage"></div>
+
+    <script>
+        document.getElementById('add-patient').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the default form submission
+            // FIELD: ['id', 'name', 'phone', 'address', 'birth_date', 'ssn', 'gender']
+            data = {
+                name: document.getElementById('id_name').value,
+                phone: document.getElementById('id_phone').value,
+                address: document.getElementById('id_address').value,
+                birth_date: document.getElementById('id_birth_date').value,
+                ssn: document.getElementById('id_ssn').value,
+                gender: document.getElementById('id_gender').value
+            };
+            sdata = JSON.stringify(data)
+            fetch(this.action, {
+                method: 'POST',
+                body: sdata,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                document.getElementById('responseMessage').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+
+    {% endblock %}
