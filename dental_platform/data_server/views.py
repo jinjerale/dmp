@@ -3,19 +3,22 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from rest_framework.decorators import api_view
 from django.shortcuts import redirect
-import json
+from django.contrib.auth.decorators import login_required
 
 from data_server.clinics import *
 from data_server.doctors import *
 from data_server.patients import *
 from data_server.serializers import *
+from data_server.api_views import *
 
+@login_required(redirect_field_name='login')
 @api_view(['GET'])
 def index(request):
     template = loader.get_template('index.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
+@login_required
 @api_view(['GET', 'POST'])
 def clinics(request):
     if request.method == 'POST':
@@ -36,6 +39,7 @@ def clinics(request):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required
 @api_view(['GET', 'POST'])
 def doctors(request):
     if request.method == 'POST':
@@ -53,6 +57,7 @@ def doctors(request):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required
 @api_view(['GET', 'POST'])
 def patients(request):
     if request.method == 'POST':
@@ -71,6 +76,7 @@ def patients(request):
     return HttpResponse(template.render(context, request))
 
 # get clinic details
+@login_required
 @api_view(['GET'])
 def clinic(request, clinic_id):
     template = loader.get_template('clinic_detail.html')
@@ -86,6 +92,7 @@ def clinic(request, clinic_id):
     return HttpResponse(template.render(context, request))
 
 @api_view(['GET'])
+@login_required
 def doctor(request, doctor_id):
     template = loader.get_template('doctor_detail.html')
     doctor, affliated_clinics, affliated_patients = getDoctorDetail(doctor_id)
@@ -102,6 +109,7 @@ def doctor(request, doctor_id):
     return HttpResponse(template.render(context, request))
 
 @api_view(['GET'])
+@login_required
 def patient(request, patient_id):
     template = loader.get_template('patient_detail.html')
     patient, visits, appointment = getPatientDetail(patient_id)
@@ -118,32 +126,28 @@ def patient(request, patient_id):
     return HttpResponse(template.render(context, request))
 
 @api_view(['POST'])
+@login_required
 def edit_doctor(request, doctor_id):
     if request.method == 'POST':
         updateDotorDetail(doctor_id, request.POST)
     return redirect('doctor', doctor_id=doctor_id)
 
 @api_view(['POST'])
+@login_required
 def edit_clinic(request, clinic_id):
     if request.method == 'POST':
         updateClinicDetail(clinic_id, request.POST)
     return redirect('clinic', clinic_id=clinic_id)
 
 @api_view(['POST'])
+@login_required
 def edit_patient(request, patient_id):
     if request.method == 'POST':
         updatePatientDetail(patient_id, request.POST)
     return redirect('patient', patient_id=patient_id)
 
-@api_view(['GET'])
-def get_clinic_info(request, clinic_id):
-    clinic = getClinicInfo(clinic_id)
-    if clinic is None:
-        return JsonResponse({'error': 'clinic not found'}, content_type='application/json', status=404)
-    data = ClinicSerializer(clinic).data
-    return JsonResponse(data, content_type='application/json', status=200)
-
 @api_view(['POST'])
+@login_required
 def patient_visit(request, patient_id):
     if request.method == 'POST':
         success = addVisit(patient_id, request.POST)

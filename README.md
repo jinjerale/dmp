@@ -36,12 +36,17 @@ python manage.py makemigrations
 ```
 python manage.py migrate
 ```
+#### Set up a user to access the system
+```
+python manage.py createsuperuser --username=joe --email=joe@example.com
+```
 ### Run Server
 ```
 python manage.py runserver
 ```
 ## How to use
 - The home page is in `localhost:8000/`
+- Login using the superuser you created earlier
 - The public API calls are in the `API-example.sh`. You can check the input parameters
 
 ## Rest APIs
@@ -57,10 +62,14 @@ python manage.py runserver
 | /clinics/:clinic_id/edit/ | POST | update clinic command  | ['id', 'name', 'phone', 'address', 'email', 'city', 'state'] | redirect |
 | /doctors/:doctors_id/edit/ | POST | update doctor command  | ['id', 'npi', 'name', 'email', 'phone', 'specialties'] | redirect |
 | /patients/:patient_id/edit/ | POST | update patient command  | ['id', 'name', 'phone', 'address', 'birth_date', 'ssn', 'gender'] | redirect |
-| /clinics/ | POST | add new clinic, public API interface  | see `API-example.sh` | { sucess: true/false} |
-| /doctors/ | POST | add new doctor, public API interface  | see `API-example.sh` | { sucess: true/false} |
-| /patients/ | POST | add new patient, public API interface  | see `API-example.sh` | { sucess: true/false} |
-| /clinics/:clinic_id/info/ | GET | get clinic information without affiliated patients and doctors | see `API-example.sh` | see `API-example.sh` |
+| /api/clinics/ | POST | add new clinic, public API interface  | see `API-example.sh` | { sucess: true/false} |
+| /api/doctors/ | POST | add new doctor, public API interface  | see `API-example.sh` | { sucess: true/false} |
+| /api/patients/ | POST | add new patient, public API interface  | see `API-example.sh` | { sucess: true/false} |
+| /api/clinics/:clinic_id/ | GET | get clinic information without affiliated patients and doctors | see `API-example.sh` | see `API-example.sh` |
 
 
 ## Assumptions
+1. One patient can have multiple appointments, but we only shows the most recent one.
+1. You cannot add any affliation when you create clinics, doctors, patients
+1. Affliations associated with patients can only be added when adding an appointment/visit
+1.

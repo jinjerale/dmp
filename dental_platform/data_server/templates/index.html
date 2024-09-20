@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+{% if user.is_authenticated %}
+Hi {{ user.username }}!
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Log Out</button>
+  </form>
+{% else %}
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+{% endif %}
 <div class="jumbotron text-center">
     <h1 class="display-4">Welcome to Dental Management System</h1>
     <p class="lead">Manage Clinics, Doctors, and Patients efficiently.</p>

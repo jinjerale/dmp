@@ -15,12 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from data_server import views
+from rest_framework.authtoken.views import obtain_auth_token
+from data_server.api_views import ClinicCreateView, DoctorCreateView, PatientCreateView, ClinicDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
+    path('', views.index, name='index'),
     path('clinics/', views.clinics, name='clinics'),
     path('doctors/', views.doctors, name='doctors'),
     path('patients/', views.patients, name='patients'),
@@ -30,6 +32,11 @@ urlpatterns = [
     path('clinics/<int:clinic_id>/edit/', views.edit_clinic, name='edit_clinic'),
     path('doctors/<int:doctor_id>/edit/', views.edit_doctor, name='edit_doctor'),
     path('patients/<int:patient_id>/edit/', views.edit_patient, name='edit_patient'),
-    path('clinics/<int:clinic_id>/info/', views.get_clinic_info, name='get_clinic_info'),
     path('patients/<int:patient_id>/visits/', views.patient_visit, name='patient_visit'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('api/clinics/', ClinicCreateView.as_view(), name='create_clinic'),
+    path('api/doctors/', DoctorCreateView.as_view(), name='create_doctor'),
+    path('api/patients/', PatientCreateView.as_view(), name='create_patient'),
+    path('api/clinics/<int:clinic_id>/', ClinicDetailView.as_view(), name='clinic_detail'),
 ]
