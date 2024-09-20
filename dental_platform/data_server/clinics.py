@@ -37,9 +37,9 @@ def addClinic(data):
     formobj = ClinicForm(data)
     if formobj.is_valid():
         formobj.save()
-        return True
+        return True, "Clinic added successfully"
     print(formobj.errors)
-    return False
+    return False, formobj.errors.as_text()
 
 def getClinicInfo(clinic_id):
     try:
