@@ -46,26 +46,16 @@
             </tr>
         </thead>
         <tbody>
-            <!-- TODO: Add doctors here -->
-            <tr>
-                <td>
-                    <input type="text" class="form-control" id="doctor_name">
-                </td>
-                <td>
-                    <input type="text" class="form-control" id="office_address">
-                </td>
-                <td>
-                    <input type="text" class="form-control" id="working_schedule">
-                </td>
-                <td>
-                    <a href="#" class="btn btn-success mb-3">Add Doctor Affiliation</a>
-                </td>
             </tr>
             {% for doctor in doctors %}
             <tr>
                 <td>{{ doctor.name }}</td>
                 <td>{{ doctor.office_address }}</td>
-                <td>{{ doctor.working_schedule }}</td>
+                <td>
+                    {% for schedule in doctor.working_schedule %}
+                    {{ schedule }}<br>
+                    {% endfor %}
+                </td>
                 <td>
                     <a href="{{ clinic.id }}/doctors" class="btn btn-warning btn-sm">Edit</a>
                 </td>
@@ -73,4 +63,76 @@
             {% endfor %}
         </tbody>
     </table>
+    <!-- make the session font smaller -->
+    <div class="alert alert-info" role="alert">
+    <form id="add-affliation" method="POST" action="affliations/">
+        {% csrf_token %}
+
+        <!-- Clinic Doctor Form -->
+        <h3>New Affliation</h3>
+        {{ clinic_doctor_form.as_p }}
+
+        <!-- Working Schedule Formset -->
+        {{ working_schedule_formset.management_form }}
+
+        <div id="working-schedules">
+            {% for form in working_schedule_formset %}
+                <div class="working-schedule-form">
+                    <h5> Working Schedule 1 </h5>
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="add-schedule">Add Another Schedule</button>
+        <!-- show error message if ajax return error -->
+        <div id="error-message" class="alert alert-danger" role="alert" style="display: none;"></div>
+
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+
+    <script>
+        // JavaScript to add more schedules dynamically
+        document.getElementById('add-schedule').addEventListener('click', function() {
+            let workingSchedules = document.getElementById('working-schedules');
+            let totalForms = document.getElementById('id_workingschedule_set-TOTAL_FORMS');
+            let formIdx = parseInt(totalForms.value);
+
+            let newForm = workingSchedules.children[0].cloneNode(true);
+            // replace workingschedule_set-${formIdx-1}- with workingschedule_set-${formIdx}-
+            // e.g. id_workingschedule_set-0-day -> id_workingschedule_set-1-day
+            newForm.innerHTML = newForm.innerHTML.replaceAll(`workingschedule_set-${formIdx-1}-`, `workingschedule_set-${formIdx}-`);
+            // change loop counter to the new index
+            newForm.querySelector('h5').innerText = `Working Schedule ${formIdx + 1}`;
+            workingSchedules.appendChild(newForm);
+            totalForms.setAttribute('value', `${formIdx + 1}`);
+        });
+        // prevent auto redirect after submit form add-affliation
+        document.getElementById('add-affliation').addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log('Form submitted');
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Affliation added successfully');
+                    // window.location.reload();
+                } else {
+                   // show error message
+                    console.log('Error adding affliation');
+                    response.json().then(data => {
+                        document.getElementById('error-message').innerText = data.message;
+                        document.getElementById('error-message').style.display = 'block';
+                    });
+                }
+            });
+        });
+    </script>
+
+
 {% endblock %}

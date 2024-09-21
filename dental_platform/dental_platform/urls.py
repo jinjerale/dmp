@@ -39,4 +39,5 @@ urlpatterns = [
     path('api/doctors/', DoctorCreateView.as_view(), name='create_doctor'),
     path('api/patients/', PatientCreateView.as_view(), name='create_patient'),
     path('api/clinics/<int:clinic_id>/', ClinicDetailView.as_view(), name='clinic_detail'),
+    path('clinics/<int:clinic_id>/affliations/', views.add_affliation, name='add_affliation'),
 ]

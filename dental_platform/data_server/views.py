@@ -10,6 +10,7 @@ from data_server.doctors import *
 from data_server.patients import *
 from data_server.serializers import *
 from data_server.api_views import *
+from .models import *
 
 @login_required(redirect_field_name='login')
 @api_view(['GET'])
@@ -87,7 +88,9 @@ def clinic(request, clinic_id):
         context = {}
     context = {
         'clinic': clinic,
-        'doctors': affliated_doctors
+        'doctors': affliated_doctors,
+        'clinic_doctor_form': ClinicDoctorForm(),
+        'working_schedule_formset': WorkingScheduleFormSet()
     }
     return HttpResponse(template.render(context, request))
 
@@ -154,3 +157,13 @@ def patient_visit(request, patient_id):
         if success:
             return redirect('patient', patient_id=patient_id)
     return redirect('patient', patient_id=patient_id)
+
+@api_view(['POST'])
+@login_required
+def add_affliation(request, clinic_id):
+    message = "unknow error"
+    if request.method == 'POST':
+        success, message = addAffliation(clinic_id, request.POST)
+        if success:
+            return redirect('clinic', clinic_id=clinic_id)
+    return JsonResponse({'success': success, 'message': message}, status=400)

@@ -72,4 +72,4 @@ python manage.py runserver
 1. One patient can have multiple appointments, but we only shows the most recent one.
 1. You cannot add any affliation when you create clinics, doctors, patients
 1. Affliations associated with patients can only be added when adding an appointment/visit
-1.
+1. Affliations between clinic and doctor are unique among database.

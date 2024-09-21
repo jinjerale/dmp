@@ -2,6 +2,7 @@ from django.db import models
 from django import forms
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
+from django.forms import inlineformset_factory
 
 MAX_LENGTH = 100
 
@@ -17,6 +18,18 @@ class ProcedureType(models.TextChoices):
 class Gender(models.TextChoices):
     MALE = 'M', 'Male'
     FEMAILE = 'F', 'Female'
+
+class Day(models.IntegerChoices):
+    MON = 0, 'Monday'
+    TUE = 1, 'Tuesday'
+    WED = 2, 'Wednesday'
+    THU = 3, 'Thursday'
+    FRI = 4, 'Friday'
+    SAT = 5, 'Saturday'
+    SUN = 6, 'Sunday'
+
+    def __str__(self) -> str:
+        return self.name
 
 ### Entities ##
 
@@ -74,6 +87,11 @@ class ClinicDoctor(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     office = models.CharField(max_length=MAX_LENGTH)
     # schedule
+    def __str__(self) -> str:
+        return f"{self.clinic.name} - {self.doctor.name}"
+    # make clinic and doctor unique together
+    class Meta:
+        unique_together = ['clinic', 'doctor']
 
 class Visit(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -90,10 +108,15 @@ class Appointment(models.Model):
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
-    time = models.TimeField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
     date_booked = models.DateField(auto_now_add=True)
     procedure = models.CharField(max_length=2, choices=ProcedureType.choices)
-    # status
+
+    def clean(self) -> None:
+        # start_time must be before end_time
+        if self.start_time >= self.end_time:
+            raise ValidationError('Start time must be before end time')
 
 ## Form object
 
@@ -127,3 +150,77 @@ class VisitForm(forms.ModelForm):
             'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
+
+class WorkingSchedule(models.Model):
+    affliation = models.ForeignKey(ClinicDoctor, on_delete=models.CASCADE)
+    day = models.IntegerField(choices=Day.choices)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self) -> str:
+        return f'{self.get_day_display()}: {self.start_time} - {self.end_time}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def clean(self) -> None:
+        # start_time must be before end_time
+        if self.start_time >= self.end_time:
+            raise ValidationError('Start time must be before end time')
+
+        # check that the shedule won't overlap with other schedules
+        # for schedule in WorkingSchedule.objects.filter(day=self.day):
+        #     if schedule.affliation.doctor == self.affliation.doctor:
+        #         if schedule.start_time < self.end_time and self.start_time < schedule.end_time:
+        #             raise ValidationError('Schedule overlaps with existing schedule')
+
+
+class DoctorSchedule(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self) -> str:
+        return f'{self.day.lookup_name}: {self.start_time} - {self.end_time}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def clean(self) -> None:
+        # start_time must be before end_time
+        if self.start_time >= self.end_time:
+            raise ValidationError('Start time must be before end time')
+
+        for schedule in WorkingSchedule.objects.filter(doctor=self.doctor, date=self.date):
+            if schedule.start_time < self.end_time and self.start_time < schedule.end_time:
+                raise ValidationError('Schedule overlaps with existing schedule')
+
+# clinic is already specified in the affliation
+class ClinicDoctorForm(forms.ModelForm):
+    class Meta:
+        model = ClinicDoctor
+        fields = ['doctor', 'office']
+        widgets = {
+            'doctor': forms.Select(attrs={'class': 'form-control'}),
+            'office': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
+class WorkingScheduleForm(forms.ModelForm):
+    class Meta:
+        model = WorkingSchedule
+        # affliation is specified in the parent form
+        fields = ['day', 'start_time', 'end_time']
+        widgets = {
+            'day': forms.Select(attrs={'class': 'form-control'}),
+            'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+        }
+
+WorkingScheduleFormSet = inlineformset_factory(
+    ClinicDoctor, # parent model
+    WorkingSchedule, # model to use
+    form=WorkingScheduleForm, # form to use
+    extra=1, # number of forms to display
+    can_delete=True # allow deletion of forms
+)
