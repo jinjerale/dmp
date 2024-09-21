@@ -1,5 +1,6 @@
 from data_server.models import Patient, Visit, Appointment, PatientForm, ProcedureType, VisitForm
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 
 def getPatients():
     objs = Patient.objects.all()
@@ -53,6 +54,8 @@ def addPatient(data):
     print(form.errors)
     return False, form.errors.as_text()
 
+# create affliation
+@transaction.atomic
 def addVisit(patient_id, data):
     patient = get_object_or_404(Patient, id=patient_id)
     form = VisitForm(data)
@@ -60,6 +63,11 @@ def addVisit(patient_id, data):
         visit = form.save(commit=False)
         visit.patient = patient
         visit.save()
+        # create affliation to clinic and doctor
+        patient.affliated_clinics.add(visit.clinic)
+        patient.afflicated_doctors.add(visit.doctor)
+        patient.save()
+
         return True
     print(form.errors)
     return False
