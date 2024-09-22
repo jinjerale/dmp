@@ -1,6 +1,7 @@
 # Dental Management Platform
 
 ## Setup
+**Note** This project is developed in python 3.10.4
 
 ### Create virtual environment
 ```
