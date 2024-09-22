@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load form_filters %}
+{% load crispy_forms_tags %}
+    <div class="alert alert-info">
+        <h4>Schedule New Appointment</h4>
+        <!-- naviage to patient detail page after submit -->
+        <form method="post" id="appForm"
+            data-clinics-url="{% url 'load_clinics' %}"
+            data-doctors-url="{% url 'load_doctors' %}"
+            action="{% url 'add_appointment' patient_id %}"
+            novalidate>
+            {% csrf_token %}
+            <table>
+                {{ new_appointment.as_table }}
+            </table>
+            <!-- display error message -->
+            {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+            <button type="submit">Save</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $("#id_procedure").change(function () {
+            var url = $("#appForm").attr("data-clinics-url");
+            var procedure = $(this).val();
+            console.log(procedure);
+            url = url + "?procedure=" + procedure;
+            console.log(url);
+            // result is a html file
+            fetch(url)
+                .then((response) => response.text())
+                .then((data) => {
+                    $("#id_clinic").html(data);
+                });
+        });
+        $("#id_clinic").change(function () {
+            var url = $("#appForm").attr("data-doctors-url");
+            var procedure = $("#id_procedure").val();
+            var clinic = $(this).val();
+            url = url + "?clinic_id=" + clinic + "&procedure=" + procedure;
+            fetch(url)
+                .then((response) => response.text())
+                .then((data) => {
+                    $("#id_doctor").html(data);
+                });
+        });
+    </script>
+{% endblock %}

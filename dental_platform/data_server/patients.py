@@ -1,4 +1,4 @@
-from data_server.models import Patient, Visit, Appointment, PatientForm, ProcedureType, VisitForm
+from data_server.models import Patient, Visit, Appointment, PatientForm, ProcedureType, VisitForm, AppointmentForm
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
@@ -71,3 +71,14 @@ def addVisit(patient_id, data):
         return True
     print(form.errors)
     return False
+
+def addAppointment(patient_id, data):
+    patient = get_object_or_404(Patient, id=patient_id)
+    form = AppointmentForm(data)
+    if form.is_valid():
+        appointment = form.save(commit=False)
+        appointment.patient = patient
+        appointment.save()
+        return True, "Appointment added successfully"
+    print(form.errors)
+    return False, form.errors.as_text()

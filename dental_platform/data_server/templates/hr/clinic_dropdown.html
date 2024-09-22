@@ -1,0 +1,4 @@
+<option value="" selected>---------</option>
+{% for clinic in clinics %}
+<option value="{{ clinic.pk }}">{{ clinic.name }}</option>
+{% endfor %}

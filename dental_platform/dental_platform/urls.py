@@ -40,4 +40,8 @@ urlpatterns = [
     path('api/patients/', PatientCreateView.as_view(), name='create_patient'),
     path('api/clinics/<int:clinic_id>/', ClinicDetailView.as_view(), name='clinic_detail'),
     path('clinics/<int:clinic_id>/affliations/', views.add_affliation, name='add_affliation'),
+    path('patients/<int:patient_id>/add_appointment/', views.new_appointment, name='new_appointment'),
+    path('ajax/clinics/', views.load_clinics, name='load_clinics'),
+    path('ajax/doctors/', views.load_doctors, name='load_doctors'),
+    path('ajax/patients/<int:patient_id>/appointments', views.add_appointment, name='add_appointment'),
 ]

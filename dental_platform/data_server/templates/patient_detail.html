@@ -41,6 +41,7 @@
         <thead>
             <tr>
                 <th>Visit Date</th>
+                <th>Visit Time</th>
                 <th>Doctor</th>
                 <th>Clinic</th>
                 <th>Procedures Done</th>
@@ -51,6 +52,7 @@
             {% for visit in visits %}
             <tr>
                 <td>{{ visit.date }}</td>
+                <td>{{ visit.start_time }} - {{ visit.end_time }}</td>
                 <td>{{ visit.doctor.name }}</td>
                 <td>{{ visit.clinic.name }}</td>
                 <td>
@@ -85,7 +87,11 @@
             </div>
             <div class="form-group">
                 <label for="time">Visit Time</label>
-                {{ visit.time|add_class:"form-control" }}
+                {{ visit.start_time|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="time">Visit Time</label>
+                {{ visit.end_time|add_class:"form-control" }}
             </div>
             <div class="form-group">
                 <label for="procedures">Procedures Done (options: CL,CR,FI,RC,WH. Each procedure separated by comma)</label>
@@ -105,13 +111,12 @@
     <h3>Next Scheduled Appointment</h3>
     {% if next_appointment %}
         <p>Appointment Date: {{ next_appointment.date }}</p>
-        <p>Appointment Time: {{ next_appointment.time }}</p>
+        <p>Appointment Time: {{ next_appointment.start_time }} - {{ next_appointment.end_time }} </p>
         <p>Clinic: {{ next_appointment.clinic.name }}</p>
         <p>Doctor: {{ next_appointment.doctor.name }}</p>
         <p>Procedure: {{ next_appointment.procedure }}</p>
     {% else %}
         <p>No upcoming appointments.</p>
     {% endif %}
-
-    <!-- <a href="#" class="btn btn-info">Schedule Appointment</a> -->
+    <a href="add_appointment/" class="btn btn-success">Schedule New Appointment</a>
 {% endblock %}

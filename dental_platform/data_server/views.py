@@ -4,6 +4,7 @@ from django.template import loader
 from rest_framework.decorators import api_view
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 from data_server.clinics import *
 from data_server.doctors import *
@@ -167,3 +168,59 @@ def add_affliation(request, clinic_id):
         if success:
             return redirect('clinic', clinic_id=clinic_id)
     return JsonResponse({'success': success, 'message': message}, status=400)
+
+# show form to add new appointment
+@api_view(['GET'])
+@login_required
+def new_appointment(request, patient_id):
+    template = loader.get_template('new_appointment.html')
+    error_message = request.GET.get('message')
+    context = {
+        'patient_id': patient_id,
+        'new_appointment': AppointmentForm(),
+        'message': error_message
+    }
+    return HttpResponse(template.render(context, request))
+
+# find clinics that provides the given procedure
+# GET /api/clinics/?procedure=<procedure>
+@api_view(['GET'])
+@login_required
+def load_clinics(request):
+    procedure = request.GET.get('procedure')
+    print(procedure, type(procedure))
+    # only show clinics that have at least one doctor providing the procedure
+    # find doctors where their specialites contain the procedure
+    avaliable_doctors = Doctor.objects.filter(specialties__contains=[procedure])
+    # find clinics where the doctor is affliated, only return unique clinics
+    clinics = Clinic.objects.filter(clinicdoctor__doctor__in=avaliable_doctors).distinct()
+    print(clinics)
+    return HttpResponse(render(request, 'hr/clinic_dropdown.html', context={'clinics': clinics}))
+
+# find doctors that provides the given procedure in the clinic
+@api_view(['GET'])
+@login_required
+def load_doctors(request):
+    clinic_id = request.GET.get('clinic_id')
+    procedure = request.GET.get('procedure')
+    print(clinic_id, procedure)
+    # find doctors that are affliated with the clinic and provide the procedure
+    doctors = Doctor.objects.filter(clinicdoctor__clinic_id=clinic_id, specialties__contains=[procedure])
+    print(doctors)
+    return HttpResponse(render(request, 'hr/doctor_dropdown.html', context={'doctors': doctors}))
+
+@api_view(['POST'])
+@login_required
+def add_appointment(request, patient_id):
+    success = False
+    message = "not completed"
+    if request.method == 'POST':
+        success, message = addAppointment(patient_id, request.POST)
+        if success:
+            return redirect('patient', patient_id=patient_id)
+    # put message as url get parameter
+    url = reverse('new_appointment', args=[patient_id])
+    if message:
+        url = f'{url}?message={message}'
+    return redirect(url)
+

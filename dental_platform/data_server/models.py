@@ -98,7 +98,8 @@ class Visit(models.Model):
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
-    time = models.TimeField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
     procedures = ArrayField(models.CharField(max_length=2, choices=ProcedureType.choices))
     note = models.TextField()
     # status
@@ -141,13 +142,14 @@ class PatientForm(forms.ModelForm):
 class VisitForm(forms.ModelForm):
     class Meta:
         model = Visit
-        fields = ['clinic', 'doctor', 'date', 'time', 'procedures', 'note']
+        fields = ['clinic', 'doctor', 'date', 'start_time', 'end_time', 'procedures', 'note']
         # display doctor name and clinic name instead of object id
         widgets = {
             'clinic': forms.Select(attrs={'class': 'form-control'}),
             'doctor': forms.Select(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
 
@@ -224,3 +226,22 @@ WorkingScheduleFormSet = inlineformset_factory(
     extra=1, # number of forms to display
     can_delete=True # allow deletion of forms
 )
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        # patient is already specified
+        fields = ['procedure', 'clinic', 'doctor', 'date', 'start_time', 'end_time']
+        widgets = {
+            'procedure': forms.Select(attrs={'class': 'form-control'}),
+            'clinic': forms.Select(attrs={'class': 'form-control'}),
+            'doctor': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['clinic'].queryset = Clinic.objects.none() # only after you choose a procedure
+        self.fields['doctor'].queryset = Doctor.objects.none() # only after you choose a clinic
