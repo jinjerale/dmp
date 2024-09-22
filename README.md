@@ -66,10 +66,15 @@ python manage.py runserver
 | /api/doctors/ | POST | add new doctor, public API interface  | see `API-example.sh` | { sucess: true/false} |
 | /api/patients/ | POST | add new patient, public API interface  | see `API-example.sh` | { sucess: true/false} |
 | /api/clinics/:clinic_id/ | GET | get clinic information without affiliated patients and doctors | see `API-example.sh` | see `API-example.sh` |
-
+| /clinics/int:clinic_id/affliations/ | POST | add clinic doctor affliation along with their working schedule | Form data | redirect/Error |
+| /patients/int:patient_id/add_appointment/ | GET | get the page for making appointment | | html page |
+| /ajax/clinics/' | GET | loading correspoding component given previous selection | | html component |
+| /ajax/doctors/' | GET | loading correspoding component given previous selection | | html component |
+| /ajax/patients/int:patient_id/appointments | POST | make appointment | AppointmentForm | redirect |
 
 ## Assumptions
 1. One patient can have multiple appointments, but we only shows the most recent one.
 1. You cannot add any affliation when you create clinics, doctors, patients
 1. Affliations associated with patients can only be added when adding an appointment/visit
 1. Affliations between clinic and doctor are unique among database.
+1. Use code for predefined specialties (CL: cleaning, CR: Crown, FL: Filling, RC: Root Canal, WH: Whitening)
